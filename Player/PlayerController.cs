@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour {
     public LayerMask whatIsGround;                      // Layer mask to check if what we are colliding down is ground.
     public Transform groundCheck;                       // Transfor componet used to check where the ground is.
     public bool isGrounded;                             // Flag to check whether the player is on the air.
+    public Vector3 respawnPosition;                     // Player respawn position.
     private Rigidbody2D myRigibody;                     // Rigibody2D component reference.
     private Animator myAnim;                          // Animator component reference.
     private bool canMove;                               // Flag to control if the player can jump.
@@ -116,9 +117,19 @@ public class PlayerController : MonoBehaviour {
         
         // check if the player is entering the kill plane.
         if ( other.tag == "KillPlane" ) {
-            gameObject.SetActive( false );
-            Debug.Log( "died" );
+            
+            // set player as current respawn position.
+            transform.position = this.respawnPosition;
         }
+    }
+
+    /// <summary>
+    /// Update respawn point.
+    /// </summary>
+    /// <param name="newPosition">Vector3 - new respawn position</param>
+    /// <returns>void</returns>
+    public void UpdateRespawnPosition( Vector3 newPosition ) {
+        this.respawnPosition = newPosition;
     }
 
     /// <summary>
@@ -136,6 +147,9 @@ public class PlayerController : MonoBehaviour {
         // set attributes default values.
         this.canJump = true;
         this.canMove = true;
+
+        // set default value for respawn position.
+        this.respawnPosition = transform.position;
     }
 
 }

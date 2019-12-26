@@ -34,6 +34,9 @@ public class CheckPointController : MonoBehaviour {
             theSpriteRenderer.sprite = flagOpened;
             this.enabled = true;
 
+            // update player respawn position.
+            other.GetComponent<PlayerController>().UpdateRespawnPosition( transform.position );
+
         }
     }
 
