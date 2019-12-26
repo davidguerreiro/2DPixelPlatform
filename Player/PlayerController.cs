@@ -107,6 +107,21 @@ public class PlayerController : MonoBehaviour {
     }
 
     /// <summary>
+    /// Sent when another object enters a trigger collider attached to this
+    /// object (2D physics only).
+    /// </summary>
+    /// <param name="other">The other Collider2D involved in this collision.</param>
+    /// <returns>void</returns>
+    void OnTriggerEnter2D( Collider2D other ) {
+        
+        // check if the player is entering the kill plane.
+        if ( other.tag == "KillPlane" ) {
+            gameObject.SetActive( false );
+            Debug.Log( "died" );
+        }
+    }
+
+    /// <summary>
     /// Init class method.
     /// </summary>
     /// <returns>void</returns>
