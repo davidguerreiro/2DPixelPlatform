@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour {
     public Transform groundCheck;                       // Transfor componet used to check where the ground is.
     public bool isGrounded;                             // Flag to check whether the player is on the air.
     private Rigidbody2D myRigibody;                     // Rigibody2D component reference.
+    private Animator myAnim;                          // Animator component reference.
     private bool canMove;                               // Flag to control if the player can jump.
     private bool canJump;                               // Flag to control if the player can jump.
 
@@ -33,6 +34,9 @@ public class PlayerController : MonoBehaviour {
         if ( this.canJump && this.isGrounded ) {
             Jump();
         }
+
+        // update animator variables so the player animation is updated.
+        UpdateAnimatorVars();
     }
 
     /// <summary>
@@ -57,10 +61,16 @@ public class PlayerController : MonoBehaviour {
             // move player to the right.
             myRigibody.velocity = new Vector3( moveSpeed, myRigibody.velocity.y, 0f );
 
+            // ensure player sprite faces right.
+            transform.localScale = new Vector3( 1f, transform.localScale.y, transform.localScale.z );
+
         } else if ( Input.GetAxisRaw( "Horizontal" ) < 0f ) {
 
             // move player to the left.
             myRigibody.velocity = new Vector3( moveSpeed * - 1, myRigibody.velocity.y, 0f );
+
+            // ensure player is facing left.
+            transform.localScale = new Vector3( - 1f, transform.localScale.y, transform.localScale.z );
 
         } else {
 
@@ -82,6 +92,21 @@ public class PlayerController : MonoBehaviour {
     }
 
     /// <summary>
+    /// Update animator variables
+    /// so the different animation states
+    /// can be triggered.
+    /// </summary>
+    /// <returns>void</returns>
+    private void UpdateAnimatorVars() {
+
+        // update animator speed variable.
+        myAnim.SetFloat( "speed", Mathf.Abs( myRigibody.velocity.x ) );
+
+        // update animator grounded variable.
+        myAnim.SetBool( "Grounded", this.isGrounded );
+    }
+
+    /// <summary>
     /// Init class method.
     /// </summary>
     /// <returns>void</returns>
@@ -89,6 +114,9 @@ public class PlayerController : MonoBehaviour {
 
         // get rigibody 2D component reference.
         myRigibody = GetComponent<Rigidbody2D>();
+
+        // get animator component reference.
+        myAnim = GetComponent<Animator>();
 
         // set attributes default values.
         this.canJump = true;
