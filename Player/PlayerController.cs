@@ -131,6 +131,33 @@ public class PlayerController : MonoBehaviour {
             // set player as current respawn position.
             StartCoroutine( LevelManager.instance.Respawn() );
         }
+
+    }
+
+    /// <summary>
+    /// Sent when an incoming collider makes contact with this object's
+    /// collider (2D physics only).
+    /// </summary>
+    /// <param name="other">The Collision2D data associated with this collision.</param>
+    void OnCollisionEnter2D( Collision2D other ) {
+
+        // check if the player is jumping into a moving platform.
+        if ( other.gameObject.tag == "MovingPlatform" && this.isGrounded ) {
+            transform.parent = other.transform;
+        }
+    }
+
+    /// <summary>
+    /// Sent when a collider on another object stops touching this
+    /// object's collider (2D physics only).
+    /// </summary>
+    /// <param name="other">The Collision2D data associated with this collision.</param>
+    void OnCollisionExit2D( Collision2D other ) {
+        
+        // check if the player is leaving a moving platform.
+        if ( other.gameObject.tag == "MovingPlatform" ) {
+            transform.parent = null;
+        }
     }
 
     /// <summary>
@@ -179,7 +206,10 @@ public class PlayerController : MonoBehaviour {
         spriteRenderer.color = new Color( spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 0f );
 
         if ( displayDestroyedParticles ) {
-            Instantiate( playerDeathParticles, transform.position, transform.rotation );
+            GameObject particleInstance = Instantiate( playerDeathParticles, transform.position, transform.rotation );
+            
+            // destroy particles after the animation is completed.
+            Utils.instance.DestroyOverTime( particleInstance, 1.1f );
         }
 
         // lock player controls.
