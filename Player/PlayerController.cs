@@ -10,10 +10,12 @@ public class PlayerController : MonoBehaviour {
     public Transform groundCheck;                       // Transfor componet used to check where the ground is.
     public bool isGrounded;                             // Flag to check whether the player is on the air.
     public Vector3 respawnPosition;                     // Player respawn position.
+    public GameObject playerDeathParticles;             // Player death partices.
     private Rigidbody2D myRigibody;                     // Rigibody2D component reference.
-    private Animator myAnim;                          // Animator component reference.
+    private Animator myAnim;                            // Animator component reference.
     private bool canMove;                               // Flag to control if the player can jump.
     private bool canJump;                               // Flag to control if the player can jump.
+    private SpriteRenderer spriteRenderer;              // Player's sprite renderer component reference.
 
     // Start is called before the first frame update.
     void Start() {
@@ -47,6 +49,14 @@ public class PlayerController : MonoBehaviour {
     private void CheckIfGrounded() {
         // creates a virtual circle and checks if overlaps with ground layer.
         this.isGrounded = Physics2D.OverlapCircle( groundCheck.position, this.groundCheckRadius, whatIsGround );
+    }
+
+    /// <summary>
+    /// Get respawn position.
+    /// </summary>
+    /// <returns>Vector3</returns>
+    public Vector3 GetRespawnPosition() {
+        return this.respawnPosition;
     }
 
     /// <summary>
@@ -119,7 +129,7 @@ public class PlayerController : MonoBehaviour {
         if ( other.tag == "KillPlane" ) {
             
             // set player as current respawn position.
-            transform.position = this.respawnPosition;
+            StartCoroutine( LevelManager.instance.Respawn() );
         }
     }
 
@@ -133,6 +143,65 @@ public class PlayerController : MonoBehaviour {
     }
 
     /// <summary>
+    /// Block player input movements.
+    /// Use this method to remove player
+    /// control for the main character.
+    /// </summary>
+    /// <returns>void</returns>
+    public void LockPlayerInput() {
+        this.canMove = false;
+        this.canJump = false;
+    }
+
+    /// <summary>
+    /// Unlock player input movements.
+    /// Use this method to grant the player
+    /// the ability to control the main character.
+    /// </summary>
+    /// <returns>void</returns>
+    public void UnlockPlayerInput() {
+        this.canJump = true;
+        this.canMove = true;
+    }
+
+    /// <summary>
+    /// Set player as defeated.
+    /// Sprite disappear and movement is
+    /// blocked.
+    /// </summary>
+    /// <param name="displayDestroyedParticles">bool - optional - wheter to display player defeated particles</param>
+    /// <returns>void</returns>
+    public void SetPlayerDefeated( bool displayDestroyedParticles = false ) {
+
+        // stop velocity and gravity.
+        myRigibody.velocity = new Vector3( 0f, 0f, 0f );
+        myRigibody.gravityScale = 0;
+        spriteRenderer.color = new Color( spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 0f );
+
+        if ( displayDestroyedParticles ) {
+            Instantiate( playerDeathParticles, transform.position, transform.rotation );
+        }
+
+        // lock player controls.
+        LockPlayerInput();
+    }
+
+    /// <summary>
+    /// Set player active in the scene and ready
+    /// to get player input.
+    /// </summary>
+    /// <returns>void</returns>
+    public void SetPlayerActive() {
+        
+        // reset gravity.
+        myRigibody.gravityScale = 2.5f;
+        spriteRenderer.color = new Color( spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 1f );
+
+        // unlock player controls.
+        UnlockPlayerInput();
+    }
+
+    /// <summary>
     /// Init class method.
     /// </summary>
     /// <returns>void</returns>
@@ -143,6 +212,9 @@ public class PlayerController : MonoBehaviour {
 
         // get animator component reference.
         myAnim = GetComponent<Animator>();
+
+        // get sprite renderer component.
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
         // set attributes default values.
         this.canJump = true;

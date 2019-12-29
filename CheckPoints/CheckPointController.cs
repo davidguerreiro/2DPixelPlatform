@@ -25,7 +25,7 @@ public class CheckPointController : MonoBehaviour {
     /// </summary>
     /// <param name="other">The other Collider2D involved in this collision.</param>
     /// <returns>void</returns>
-    void OnTriggerEnter2D(Collider2D other) {
+    void OnTriggerEnter2D( Collider2D other ) {
         
         // check if the player is entering the checkpoint.
         if ( other.tag == "Player" && ! this.enabled ) {
