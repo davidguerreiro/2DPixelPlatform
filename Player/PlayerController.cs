@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour {
     public GameObject playerDeathParticles;             // Player death partices.
     private Rigidbody2D myRigibody;                     // Rigibody2D component reference.
     private Animator myAnim;                            // Animator component reference.
+    private bool playerActive;                        // Flag to control whether the player is active in the game. Active means is playable in the scene and collisions / other gameplay stuff affects him.
     private bool canMove;                               // Flag to control if the player can jump.
     private bool canJump;                               // Flag to control if the player can jump.
     private SpriteRenderer spriteRenderer;              // Player's sprite renderer component reference.
@@ -49,6 +50,24 @@ public class PlayerController : MonoBehaviour {
     private void CheckIfGrounded() {
         // creates a virtual circle and checks if overlaps with ground layer.
         this.isGrounded = Physics2D.OverlapCircle( groundCheck.position, this.groundCheckRadius, whatIsGround );
+    }
+
+    /// <summary>
+    /// Get player active
+    /// status.
+    /// </summary>
+    /// <returns>bool</returns>
+    public bool IsPlayerActive() {
+        return this.playerActive;
+    }
+
+    /// <summary>
+    /// Set up new player status.
+    /// </summary>
+    /// <param name="newPlayerStatus">bool - new player status</param>
+    /// <returns>void</returns>
+    public void SetPlayerStatus( bool newPlayerStatus ) {
+        this.playerActive = newPlayerStatus;
     }
 
     /// <summary>
@@ -124,14 +143,17 @@ public class PlayerController : MonoBehaviour {
     /// <param name="other">The other Collider2D involved in this collision.</param>
     /// <returns>void</returns>
     void OnTriggerEnter2D( Collider2D other ) {
-        
-        // check if the player is entering the kill plane.
-        if ( other.tag == "KillPlane" ) {
-            
-            // set player as current respawn position.
-            StartCoroutine( LevelManager.instance.Respawn() );
-        }
 
+        // all trigger collisions to be checked only if the player is active.
+        if ( this.playerActive ) {
+        
+            // check if the player is entering the kill plane.
+            if ( other.tag == "KillPlane" ) {
+                
+                // set player as current respawn position.
+                StartCoroutine( LevelManager.instance.Respawn() );
+            }
+        }
     }
 
     /// <summary>
@@ -141,9 +163,13 @@ public class PlayerController : MonoBehaviour {
     /// <param name="other">The Collision2D data associated with this collision.</param>
     void OnCollisionEnter2D( Collision2D other ) {
 
-        // check if the player is jumping into a moving platform.
-        if ( other.gameObject.tag == "MovingPlatform" && this.isGrounded ) {
-            transform.parent = other.transform;
+        // all collisions to be checked only if the player is active.
+        if ( this.playerActive ) {
+
+            // check if the player is jumping into a moving platform.
+            if ( other.gameObject.tag == "MovingPlatform" && this.isGrounded ) {
+                transform.parent = other.transform;
+            }
         }
     }
 
@@ -199,6 +225,7 @@ public class PlayerController : MonoBehaviour {
     /// <param name="displayDestroyedParticles">bool - optional - wheter to display player defeated particles</param>
     /// <returns>void</returns>
     public void SetPlayerDefeated( bool displayDestroyedParticles = false ) {
+        this.playerActive = false;
 
         // stop velocity and gravity.
         myRigibody.velocity = new Vector3( 0f, 0f, 0f );
@@ -212,6 +239,9 @@ public class PlayerController : MonoBehaviour {
             Utils.instance.DestroyOverTime( particleInstance, 1.1f );
         }
 
+        // restore transform parent - just in case the player is defeated in a platform or something similar.
+        transform.parent = null;
+
         // lock player controls.
         LockPlayerInput();
     }
@@ -222,6 +252,7 @@ public class PlayerController : MonoBehaviour {
     /// </summary>
     /// <returns>void</returns>
     public void SetPlayerActive() {
+        this.playerActive = true;
         
         // reset gravity.
         myRigibody.gravityScale = 2.5f;
@@ -247,6 +278,7 @@ public class PlayerController : MonoBehaviour {
         spriteRenderer = GetComponent<SpriteRenderer>();
 
         // set attributes default values.
+        this.playerActive = true;
         this.canJump = true;
         this.canMove = true;
 

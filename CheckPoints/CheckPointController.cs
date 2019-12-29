@@ -28,7 +28,7 @@ public class CheckPointController : MonoBehaviour {
     void OnTriggerEnter2D( Collider2D other ) {
         
         // check if the player is entering the checkpoint.
-        if ( other.tag == "Player" && ! this.enabled ) {
+        if ( other.tag == "Player" && other.GetComponent<PlayerController>().IsPlayerActive() && ! this.enabled ) {
 
             // display opened flag.
             theSpriteRenderer.sprite = flagOpened;

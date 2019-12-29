@@ -21,7 +21,7 @@ public class HurtPlayer : MonoBehaviour {
     /// <param name="other">The other Collider2D involved in this collision.</param>
     void OnTriggerEnter2D( Collider2D other ) {
         
-        if ( other.tag == "Player" ) {
+        if ( other.tag == "Player" && other.GetComponent<PlayerController>().IsPlayerActive() ) {
             StartCoroutine( LevelManager.instance.Respawn() );
         }
     }
