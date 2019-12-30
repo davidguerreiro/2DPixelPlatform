@@ -52,7 +52,9 @@ public class LevelManager : MonoBehaviour {
     /// <returns>void</returns>
     public void AddCoins( int coinsToAdd ) {
         this.coinsCount += coinsToAdd;
-        Debug.Log( this.coinsCount );
+        
+        // update coins in the UI.
+        UIManager.instance.coinsText.UpdateContent( this.coinsCount.ToString() );
     }
 
     /// <summary>

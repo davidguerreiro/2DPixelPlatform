@@ -17,6 +17,9 @@ public class PlayerController : MonoBehaviour {
     private bool canMove;                               // Flag to control if the player can jump.
     private bool canJump;                               // Flag to control if the player can jump.
     private SpriteRenderer spriteRenderer;              // Player's sprite renderer component reference.
+    [SerializeField]
+    private float health;                               // Current player health.
+    private int maxHealth;                              // Player's max health.
 
     // Start is called before the first frame update.
     void Start() {
@@ -51,6 +54,51 @@ public class PlayerController : MonoBehaviour {
         // creates a virtual circle and checks if overlaps with ground layer.
         this.isGrounded = Physics2D.OverlapCircle( groundCheck.position, this.groundCheckRadius, whatIsGround );
     }
+
+    /// <summary>
+    /// Get player health.
+    /// </summary>
+    /// <returns>float</returns>
+    public float GetHealth() {
+        return this.health;
+    }
+
+    /// <summary>
+    /// Get max health.
+    /// </summary>
+    /// <returns>void</returns>
+    public int GetMaxHealth() {
+        return this.maxHealth;
+    }
+
+    /// <summary>
+    /// Get damage.
+    /// </summary>
+    /// <param name="damage">float - amount of damage received</param>
+    /// <returns>void</returns>
+    public void GetDamage( float damage ) {
+        this.health -= damage;
+
+        if ( this.health < 0 ) {
+
+            // TODO: Call life lost here.
+            health = 0;
+        }
+    }
+
+    /// <summary>
+    /// Recover health.
+    /// </summary>
+    /// <param name="recovered">float - how much health is recovered</param>
+    /// <returns>void</returns>
+    public void RecoverHealth( float recovered ) {
+        this.health += recovered;
+
+        if ( this.health > this.maxHealth ) {
+            this.health = (float) this.maxHealth;
+        }
+    }
+
 
     /// <summary>
     /// Get player active

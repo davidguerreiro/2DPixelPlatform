@@ -5,6 +5,8 @@ using UnityEngine;
 public class UIManager : MonoBehaviour {
 
     public static UIManager instance;                       // Public static class instance.
+    public HearthSection hearthSection;                     // Hearth section class component reference.
+    public TextComponent coinsText;                         // Coins text.
 
     /// <summary>
     /// Awake is called when the script instance is being loaded.
