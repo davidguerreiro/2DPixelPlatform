@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour {
     private int maxHealth;                              // Player's max health.
     [SerializeField]
     private int lifes;                                  // Current player's lifes.
+    private bool running;                               // Flag to control whether the player is running.
 
     /// <summary>
     /// Awake is called when the script instance is being loaded.
@@ -55,6 +56,11 @@ public class PlayerController : MonoBehaviour {
             Jump();
         }
 
+        // liste for player running control input.
+        if ( this.canMove && this.isGrounded ) {
+            Run();
+        }
+
         // update animator variables so the player animation is updated.
         UpdateAnimatorVars();
     }
@@ -66,6 +72,15 @@ public class PlayerController : MonoBehaviour {
     private void CheckIfGrounded() {
         // creates a virtual circle and checks if overlaps with ground layer.
         this.isGrounded = Physics2D.OverlapCircle( groundCheck.position, this.groundCheckRadius, whatIsGround );
+    }
+
+    /// <summary>
+    /// Get player running
+    /// state.
+    /// </summary>
+    /// <returns>bool</returns>
+    public bool IsRunning() {
+        return this.running;
     }
 
     /// <summary>
@@ -94,8 +109,6 @@ public class PlayerController : MonoBehaviour {
 
         // update health in the UI.
         UIManager.instance.hearthSection.UpdateHealth();
-
-        Debug.Log( this.health );
 
         if ( this.health <= 0 ) {
 
@@ -182,10 +195,14 @@ public class PlayerController : MonoBehaviour {
     /// <returns>void</returns>
     public void MovePlayer() {
 
+        // alter moveSpeed if running.
+        float playerSpeed = ( this.running ) ? this.moveSpeed * 2f : this.moveSpeed;
+
+
         if ( Input.GetAxisRaw( "Horizontal" ) > 0f ) {
 
             // move player to the right.
-            myRigibody.velocity = new Vector3( moveSpeed, myRigibody.velocity.y, 0f );
+            myRigibody.velocity = new Vector3( playerSpeed, myRigibody.velocity.y, 0f );
 
             // ensure player sprite faces right.
             transform.localScale = new Vector3( 1f, transform.localScale.y, transform.localScale.z );
@@ -193,7 +210,7 @@ public class PlayerController : MonoBehaviour {
         } else if ( Input.GetAxisRaw( "Horizontal" ) < 0f ) {
 
             // move player to the left.
-            myRigibody.velocity = new Vector3( moveSpeed * - 1, myRigibody.velocity.y, 0f );
+            myRigibody.velocity = new Vector3( playerSpeed * - 1, myRigibody.velocity.y, 0f );
 
             // ensure player is facing left.
             transform.localScale = new Vector3( - 1f, transform.localScale.y, transform.localScale.z );
@@ -211,9 +228,23 @@ public class PlayerController : MonoBehaviour {
     /// <returns>void</returns>
     private void Jump() {
 
-        // check if space bar or jump button is being pressed.
+        // check if space bar or jump button is pressed.
         if ( Input.GetButtonDown( "Jump" ) ) {
             myRigibody.velocity = new Vector3( myRigibody.velocity.x, jumpSpeed, 0f );
+        }
+    }
+
+    /// <summary>
+    /// Run action method.
+    /// </summary>
+    /// <returns>void</returns>
+    public void Run() {
+
+        // check if left shift button is being pressed.
+        if ( Input.GetButton( "Run" ) ) {
+            this.running = true;
+        } else {
+            this.running = false;
         }
     }
 
@@ -381,6 +412,7 @@ public class PlayerController : MonoBehaviour {
         this.playerActive = true;
         this.canJump = true;
         this.canMove = true;
+        this.running = false;
 
         // set defalt maxHealth.
         this.maxHealth = 3;
