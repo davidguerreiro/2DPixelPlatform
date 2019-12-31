@@ -37,6 +37,9 @@ public class LevelManager : MonoBehaviour {
 
         // remove player, display death particles and disable controls.
         thePlayer.SetPlayerDefeated( true );
+
+        // udpate player current lifes.
+        thePlayer.UpdateLifes( -1 );
         yield return new WaitForSeconds( toWait );
 
         // respawn player, display player and give controls back to the player.

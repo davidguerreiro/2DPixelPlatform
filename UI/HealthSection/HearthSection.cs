@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class HearthSection : MonoBehaviour {
     private Hearth[] hearths;                           // Player current amount of hearths.
-    public PlayerController player;                     // Player controler class component reference.
 
     // Start is called before the first frame update
     void Start() {
@@ -19,8 +18,8 @@ public class HearthSection : MonoBehaviour {
     /// </summary>
     /// <returns>void</returns>
     public void UpdateHealth() {
-        int maxHealth = player.GetMaxHealth();
-        float currentHealth = player.GetHealth();
+        int maxHealth = PlayerController.instance.GetMaxHealth();
+        float currentHealth = PlayerController.instance.GetHealth();
 
         for ( int i = 0; i < maxHealth; i++ ) {
             

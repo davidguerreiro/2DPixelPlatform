@@ -22,6 +22,8 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private float health;                               // Current player health.
     private int maxHealth;                              // Player's max health.
+    [SerializeField]
+    private int lifes;                                  // Current player's lifes.
 
     /// <summary>
     /// Awake is called when the script instance is being loaded.
@@ -93,12 +95,43 @@ public class PlayerController : MonoBehaviour {
         // update health in the UI.
         UIManager.instance.hearthSection.UpdateHealth();
 
+        Debug.Log( this.health );
+
         if ( this.health <= 0 ) {
 
             // TODO: Call life lost here.
             health = 0;
             StartCoroutine( LevelManager.instance.Respawn() );
         }
+    }
+
+    /// <summary>
+    /// Get current lifes.
+    /// </summary>
+    /// <returns>int</returns>
+    public int GetLifes() {
+        return this.lifes;
+    }
+
+    /// <summary>
+    /// Update lifes.
+    /// </summary>
+    /// <param name="toAdd">int - how many lifes to add or remove</param>
+    /// <returns>void</returns>
+    public void UpdateLifes( int toAdd ) {
+        this.lifes += toAdd;
+        
+        // ensure max lifes and min lifes is never outreached.
+        if ( this.lifes > 99 ) {
+            this.lifes = 99;
+        }
+
+        if ( this.lifes < 0 ) {
+            this.lifes = 0;
+        }
+
+        // update UI.
+        UIManager.instance.lifes.UpdateContent( this.lifes.ToString() );
     }
 
     /// <summary>
