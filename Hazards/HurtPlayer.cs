@@ -3,16 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class HurtPlayer : MonoBehaviour {
-
-    // Start is called before the first frame update
-    void Start() {
-        
-    }
-
-    // Update is called once per frame
-    void Update() {
-        
-    }
+    public float damage;                                    // Damage caused to the player.
 
     /// <summary>
     /// Sent when another object enters a trigger collider attached to this
@@ -22,7 +13,9 @@ public class HurtPlayer : MonoBehaviour {
     void OnTriggerEnter2D( Collider2D other ) {
         
         if ( other.tag == "Player" && other.GetComponent<PlayerController>().IsPlayerActive() ) {
-            StartCoroutine( LevelManager.instance.Respawn() );
+
+            // add damage to player.
+            PlayerController.instance.GetDamage( this.damage );
         }
     }
 }

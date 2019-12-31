@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
+
+    public static PlayerController instance;              // Public static instance reference.
     public float moveSpeed;                             // Player's movement speed.
     public float jumpSpeed;                             // Player's jump speed.
     public float groundCheckRadius;                     // Radious used for the circle which checks whether the player is in the fool.
@@ -20,6 +22,15 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private float health;                               // Current player health.
     private int maxHealth;                              // Player's max health.
+
+    /// <summary>
+    /// Awake is called when the script instance is being loaded.
+    /// </summary>
+    void Awake() {
+        if ( instance == null ) {
+            instance = this;
+        }
+    }
 
     // Start is called before the first frame update.
     void Start() {
@@ -79,10 +90,14 @@ public class PlayerController : MonoBehaviour {
     public void GetDamage( float damage ) {
         this.health -= damage;
 
-        if ( this.health < 0 ) {
+        // update health in the UI.
+        UIManager.instance.hearthSection.UpdateHealth();
+
+        if ( this.health <= 0 ) {
 
             // TODO: Call life lost here.
             health = 0;
+            StartCoroutine( LevelManager.instance.Respawn() );
         }
     }
 
@@ -305,6 +320,10 @@ public class PlayerController : MonoBehaviour {
         // reset gravity.
         myRigibody.gravityScale = 2.5f;
         spriteRenderer.color = new Color( spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 1f );
+
+        // restore player health.
+        this.health = this.maxHealth;
+        UIManager.instance.hearthSection.UpdateHealth();
 
         // unlock player controls.
         UnlockPlayerInput();
