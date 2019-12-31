@@ -382,6 +382,9 @@ public class PlayerController : MonoBehaviour {
         this.canJump = true;
         this.canMove = true;
 
+        // set defalt maxHealth.
+        this.maxHealth = 3;
+
         // set default value for respawn position.
         this.respawnPosition = transform.position;
     }

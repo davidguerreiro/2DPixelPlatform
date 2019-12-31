@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Hearth : MonoBehaviour {
 
@@ -10,7 +11,7 @@ public class Hearth : MonoBehaviour {
 
     [SerializeField]
     private float value = 1f;                           // Heath value. It can be 1, 0.5 or 0 if empty.
-    private SpriteRenderer spriteRenderer;              // Sprite Renderer component reference.
+    private Image spriteRenderer;              // Sprite Renderer component reference.
 
     // Start is called before the first frame update
     void Start() {
@@ -59,7 +60,7 @@ public class Hearth : MonoBehaviour {
     /// Restore hearth.
     /// </summary>
     /// <returns>void</returns>
-    public void Resotore() {
+    public void Restore() {
         this.value = 1f;
         spriteRenderer.sprite = hearthSprites[2];
     }
@@ -72,6 +73,6 @@ public class Hearth : MonoBehaviour {
     private void Init() {
 
         // get sprite renderer component.
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer = GetComponent<Image>();
     }
 }
