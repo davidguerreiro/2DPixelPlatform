@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour {
     public float groundCheckRadius;                     // Radious used for the circle which checks whether the player is in the fool.
     public LayerMask whatIsGround;                      // Layer mask to check if what we are colliding down is ground.
     public Transform groundCheck;                       // Transfor componet used to check where the ground is.
+    public GameObject stompEnemy;                       // GameObject used to check whether we are jumping over an enemy and causing damage to him.
     public bool isGrounded;                             // Flag to check whether the player is on the air.
     public Vector3 respawnPosition;                     // Player respawn position.
     public GameObject playerDeathParticles;             // Player death partices.
@@ -63,6 +64,16 @@ public class PlayerController : MonoBehaviour {
 
         // update animator variables so the player animation is updated.
         UpdateAnimatorVars();
+    }
+
+    /// <summary>
+    /// This function is called every fixed framerate frame, if the MonoBehaviour is enabled.
+    /// </summary>
+    /// <returns>void</returns>
+    void FixedUpdate() {
+        
+        // check if we are falling so enemys can be hit by the played.
+        CheckIfAttacking();
     }
 
     /// <summary>
@@ -391,6 +402,26 @@ public class PlayerController : MonoBehaviour {
 
         // unlock player controls.
         UnlockPlayerInput();
+    }
+
+    /// <summary>
+    /// Check if we are attacking
+    /// and enemy. This only happens
+    /// when we are failing as the 
+    /// only way to destroy enemies is
+    /// jumpling over them.
+    /// This method must be called in
+    /// FixedUpdate.
+    /// </summary>
+    /// <returns>void</returns>
+    private void CheckIfAttacking() {
+
+        // enable destroy enemy collider if falling.
+        if ( myRigibody.velocity.y < 0 ) {
+            stompEnemy.SetActive( true );
+        } else {
+            stompEnemy.SetActive( false );
+        }
     }
 
     /// <summary>

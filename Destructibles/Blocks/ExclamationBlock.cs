@@ -50,7 +50,7 @@ public class ExclamationBlock : MonoBehaviour {
     void OnCollisionEnter2D( Collision2D other ) {
         
         // check if player collides the block from behind.
-        if ( ! this.used && other.gameObject.tag == "Player" && other.gameObject.transform.position.x < transform.parent.position.x ) {
+        if ( ! this.used && other.gameObject.tag == "Player" && other.gameObject.transform.position.y < transform.parent.position.y ) {
             BlockHit();
         }
     }
