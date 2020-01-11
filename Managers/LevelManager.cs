@@ -7,6 +7,7 @@ public class LevelManager : MonoBehaviour {
     public float waitToRespawn;                         // Time to wait before the player respawn.
     public PlayerController thePlayer;                  // Player controller class component reference.
     public int coinsCount;                              // Total number of coins collected.
+    private ResetOnRespaw[] objectsToReset;             // Objects which are respawn every time the player dies.
 
     /// <summary>
     /// Awake is called when the script instance is being loaded.
@@ -42,9 +43,16 @@ public class LevelManager : MonoBehaviour {
         thePlayer.UpdateLifes( -1 );
         yield return new WaitForSeconds( toWait );
 
+        // respawn defeated enemies.
+        foreach ( ResetOnRespaw item in objectsToReset ) {
+            item.gameObject.SetActive( true );
+            item.Respawn();
+        }
+
         // respawn player, display player and give controls back to the player.
         thePlayer.gameObject.transform.position = thePlayer.GetRespawnPosition();
         thePlayer.SetPlayerActive();
+
     }
 
     /// <summary>
@@ -68,5 +76,9 @@ public class LevelManager : MonoBehaviour {
         
         // set default values for attributes.
         this.coinsCount = 0;
+
+        // get all respawn objects in the current scene.
+        objectsToReset = FindObjectsOfType<ResetOnRespaw>();
+        Debug.Log( objectsToReset.Length );
     }
 }

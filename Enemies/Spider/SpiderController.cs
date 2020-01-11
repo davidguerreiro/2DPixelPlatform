@@ -59,7 +59,7 @@ public class SpiderController : MonoBehaviour {
         
         // check if the spider has fallen off the scene so it has to be destroyed.
         if ( other.tag == "KillPlane" ) {
-            Destroy( this.gameObject );
+            this.gameObject.SetActive( false );
         }
     }
 }

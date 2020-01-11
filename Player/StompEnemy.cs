@@ -35,7 +35,7 @@ public class StompEnemy : MonoBehaviour {
 
                 // display particles and destroy enemy.
                 Instantiate( deathSplosion, other.transform.position, other.transform.rotation );
-                Destroy( other.gameObject );
+                other.gameObject.SetActive( false );
             }
         }
     }
