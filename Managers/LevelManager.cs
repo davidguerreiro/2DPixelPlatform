@@ -79,6 +79,5 @@ public class LevelManager : MonoBehaviour {
 
         // get all respawn objects in the current scene.
         objectsToReset = FindObjectsOfType<ResetOnRespaw>();
-        Debug.Log( objectsToReset.Length );
     }
 }

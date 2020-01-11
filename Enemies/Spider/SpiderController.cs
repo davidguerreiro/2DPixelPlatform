@@ -51,6 +51,15 @@ public class SpiderController : MonoBehaviour {
     }
 
     /// <summary>
+    /// This function is called when the object becomes enabled and active.
+    /// </summary>
+    void OnEnable() {
+        
+        // ensre the spider does not move until it is visible after respawn.
+        this.canMove = false;
+    }
+
+    /// <summary>
     /// Sent when another object enters a trigger collider attached to this
     /// object (2D physics only).
     /// </summary>
