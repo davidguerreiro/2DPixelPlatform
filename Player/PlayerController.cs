@@ -55,10 +55,14 @@ public class PlayerController : MonoBehaviour {
         CheckIfGrounded();
 
         // check knock status.
-        KnockBackControl();
+        if ( this.playerActive ) {
+            KnockBackControl();
+        }
 
         // check invincible control.
-        InvencibleControl();
+        if ( this.playerActive ) {
+            InvencibleControl();
+        }
 
         // listen for movement players control.
         if ( this.canMove ) {
