@@ -14,9 +14,15 @@ public class PlayerController : MonoBehaviour {
     public bool isGrounded;                             // Flag to check whether the player is on the air.
     public Vector3 respawnPosition;                     // Player respawn position.
     public GameObject playerDeathParticles;             // Player death partices.
+    public float knockBackForce;                        // Force applied to the player when hit by enemy or hazard.
+    public float knockBackLenght;                       // For how long the player is in knocked state.
+    public bool invincible;                             // Whether the player is invincible or not. If invincible, it cannot be hurt by enemies or hazards.
+    public float invincibleLength;                      // For how long ghe player is in invincible status.
+    private float invincibleCounter;                    // Internal counter for invincible status.
+    private float knockBackCounter;                     // Internal counter for knock status.
     private Rigidbody2D myRigibody;                     // Rigibody2D component reference.
     private Animator myAnim;                            // Animator component reference.
-    private bool playerActive;                        // Flag to control whether the player is active in the game. Active means is playable in the scene and collisions / other gameplay stuff affects him.
+    private bool playerActive;                          // Flag to control whether the player is active in the game. Active means is playable in the scene and collisions / other gameplay stuff affects him.
     private bool canMove;                               // Flag to control if the player can jump.
     private bool canJump;                               // Flag to control if the player can jump.
     private SpriteRenderer spriteRenderer;              // Player's sprite renderer component reference.
@@ -26,6 +32,7 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private int lifes;                                  // Current player's lifes.
     private bool running;                               // Flag to control whether the player is running.
+
 
     /// <summary>
     /// Awake is called when the script instance is being loaded.
@@ -46,6 +53,12 @@ public class PlayerController : MonoBehaviour {
 
         // check if the player is grounded.
         CheckIfGrounded();
+
+        // check knock status.
+        KnockBackControl();
+
+        // check invincible control.
+        InvencibleControl();
 
         // listen for movement players control.
         if ( this.canMove ) {
@@ -116,10 +129,14 @@ public class PlayerController : MonoBehaviour {
     /// <param name="damage">float - amount of damage received</param>
     /// <returns>void</returns>
     public void GetDamage( float damage ) {
+
         this.health -= damage;
 
         // update health in the UI.
         UIManager.instance.hearthSection.UpdateHealth();
+
+        // knock player.
+        KnockBack();
 
         if ( this.health <= 0 ) {
 
@@ -422,6 +439,90 @@ public class PlayerController : MonoBehaviour {
         } else {
             stompEnemy.SetActive( false );
         }
+    }
+
+    /// <summary>
+    /// Knock player when hit by
+    /// an enemy or hazard.
+    /// </summary>
+    /// <returns>void</returns>
+    public void KnockBack() {
+        this.knockBackCounter = this.knockBackLenght;
+        
+        // set player as invencible.
+        Invencible();
+    }
+
+    /// <summary>
+    /// Set player as invincibe.
+    /// Usually this status is granted
+    /// to player after being hurt by an
+    /// enemy or hazards.
+    /// </summary>
+    /// <returns>void</returns>
+    public void Invencible() {
+        this.invincibleCounter = this.invincibleLength;
+        this.invincible = true; 
+    }
+
+    /// <summary>
+    /// Invencible status
+    /// control. This method
+    /// must be called in 
+    /// the Update loop.
+    /// </summary>
+    /// <returns>void</returns>
+    private void InvencibleControl() {
+        if ( invincibleCounter <= 0 ) {
+
+            if ( this.invincible ) {
+                AlterTransparency( 1f );
+            }
+
+            this.invincible = false;
+        } else {
+
+            if ( ! this.invincible ) {
+                AlterTransparency( 0.4f );
+            }
+            
+            invincibleCounter -= Time.deltaTime;
+        }
+    }
+
+    /// <summary>
+    /// Control whether the player
+    /// is in knock state.
+    /// This method must be called
+    /// in Update.
+    /// </summary>
+    /// <returns>void</returns>
+    private void KnockBackControl() {
+
+        if ( knockBackCounter <= 0 ) {
+            this.canMove = true;
+        } else {
+            this.canMove = false;
+            knockBackCounter -= Time.deltaTime;
+
+            // check player direction before applying the knock force.
+            if ( transform.localScale.x > 0 ) {
+                myRigibody.velocity = new Vector3( - knockBackForce, knockBackForce, 0f );
+            } else {
+                myRigibody.velocity = new Vector3( knockBackForce, knockBackForce, 0f );
+            }
+        }
+    }
+
+    /// <summary>
+    /// Modify player transparency sprite
+    /// Usually this is used when the player
+    /// is knocked by an enemy.
+    /// </summary>
+    /// <param name="value">float - new value after knocked</param>
+    /// <returns>void</returns>
+    public void AlterTransparency( float value ) {
+        spriteRenderer.color = new Color( spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, value );
     }
 
     /// <summary>

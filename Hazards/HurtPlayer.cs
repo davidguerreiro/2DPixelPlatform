@@ -14,8 +14,10 @@ public class HurtPlayer : MonoBehaviour {
         
         if ( other.tag == "Player" && other.GetComponent<PlayerController>().IsPlayerActive() ) {
 
-            // add damage to player.
-            PlayerController.instance.GetDamage( this.damage );
+            // add damage to player if not invincible.
+            if ( ! PlayerController.instance.invincible ) {
+                PlayerController.instance.GetDamage( this.damage );
+            }
         }
     }
 }
