@@ -188,6 +188,9 @@ public class PlayerController : MonoBehaviour {
         if ( this.health > this.maxHealth ) {
             this.health = (float) this.maxHealth;
         }
+
+        // update health in the UI.
+        UIManager.instance.hearthSection.UpdateHealth();
     }
 
 
