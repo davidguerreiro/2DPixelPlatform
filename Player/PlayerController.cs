@@ -32,6 +32,7 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private int lifes;                                  // Current player's lifes.
     private bool running;                               // Flag to control whether the player is running.
+    private PlayerSoundManager soundManager;             // Player sound manager class component reference.
 
 
     /// <summary>
@@ -264,6 +265,9 @@ public class PlayerController : MonoBehaviour {
         // check if space bar or jump button is pressed.
         if ( Input.GetButtonDown( "Jump" ) ) {
             myRigibody.velocity = new Vector3( myRigibody.velocity.x, jumpSpeed, 0f );
+
+            // play jump sound.
+            soundManager.PlaySound( "jump" );
         }
     }
 
@@ -394,6 +398,9 @@ public class PlayerController : MonoBehaviour {
 
         if ( displayDestroyedParticles ) {
             GameObject particleInstance = Instantiate( playerDeathParticles, transform.position, transform.rotation );
+
+            // play player destroyed sound.
+            soundManager.PlaySound( "die" );
             
             // destroy particles after the animation is completed.
             Utils.instance.DestroyOverTime( particleInstance, 1.1f );
@@ -453,6 +460,9 @@ public class PlayerController : MonoBehaviour {
     /// <returns>void</returns>
     public void KnockBack() {
         this.knockBackCounter = this.knockBackLenght;
+
+        // display hurt sound.
+        soundManager.PlaySound( "hurt" );
         
         // set player as invencible only if it is still alive.
         if ( this.health > 0 ) {
@@ -542,6 +552,9 @@ public class PlayerController : MonoBehaviour {
 
         // get sprite renderer component.
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        // get sound manager class component reference.
+        soundManager = GetComponent<PlayerSoundManager>();
 
         // set attributes default values.
         this.playerActive = true;
