@@ -61,6 +61,11 @@ public class LevelManager : MonoBehaviour {
             thePlayer.gameObject.transform.position = thePlayer.GetRespawnPosition();
             thePlayer.SetPlayerActive();
         } else {
+
+            // play game over music.
+            LevelMusicManager.instance.PlaySong( "gameOver" );
+
+            // display game over panel.
             UIManager.instance.DisplayGameOverPanel();
         }
 
