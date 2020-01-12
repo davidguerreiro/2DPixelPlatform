@@ -43,15 +43,21 @@ public class LevelManager : MonoBehaviour {
         thePlayer.UpdateLifes( -1 );
         yield return new WaitForSeconds( toWait );
 
-        // respawn defeated enemies.
-        foreach ( ResetOnRespaw item in objectsToReset ) {
-            item.gameObject.SetActive( true );
-            item.Respawn();
-        }
+        // respaw only if the player has enough lifes, if not display gameOver.
+        if ( thePlayer.GetLifes() > 0 ) {
 
-        // respawn player, display player and give controls back to the player.
-        thePlayer.gameObject.transform.position = thePlayer.GetRespawnPosition();
-        thePlayer.SetPlayerActive();
+            // respawn defeated enemies.
+            foreach ( ResetOnRespaw item in objectsToReset ) {
+                item.gameObject.SetActive( true );
+                item.Respawn();
+            }
+
+            // respawn player, display player and give controls back to the player.
+            thePlayer.gameObject.transform.position = thePlayer.GetRespawnPosition();
+            thePlayer.SetPlayerActive();
+        } else {
+            UIManager.instance.DisplayGameOverPanel();
+        }
 
     }
 

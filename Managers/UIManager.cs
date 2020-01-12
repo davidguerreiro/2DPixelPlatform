@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour {
     public HearthSection hearthSection;                     // Hearth section class component reference.
     public TextComponent coinsText;                         // Coins text class component reference.
     public TextComponent lifes;                             // Lifes text class component reference.
+    public GameObject GameOverPanel;                        // Game over panel gameObject.
     
     /// <summary>
     /// Awake is called when the script instance is being loaded.
@@ -18,13 +19,12 @@ public class UIManager : MonoBehaviour {
         }
     }
 
-    // Start is called before the first frame update
-    void Start() {
-        
-    }
-
-    // Update is called once per frame
-    void Update() {
-        
+    /// <summary>
+    /// Display game over
+    /// panel on the screen.
+    /// </summary>
+    /// <returns>void</returns>
+    public void DisplayGameOverPanel() {
+        GameOverPanel.SetActive( true );
     }
 }

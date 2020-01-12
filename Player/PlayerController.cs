@@ -139,8 +139,6 @@ public class PlayerController : MonoBehaviour {
         KnockBack();
 
         if ( this.health <= 0 ) {
-
-            // TODO: Call life lost here.
             health = 0;
             StartCoroutine( LevelManager.instance.Respawn() );
         }
