@@ -449,8 +449,10 @@ public class PlayerController : MonoBehaviour {
     public void KnockBack() {
         this.knockBackCounter = this.knockBackLenght;
         
-        // set player as invencible.
-        Invencible();
+        // set player as invencible only if it is still alive.
+        if ( this.health > 0 ) {
+            Invencible();
+        }
     }
 
     /// <summary>
@@ -481,11 +483,7 @@ public class PlayerController : MonoBehaviour {
 
             this.invincible = false;
         } else {
-
-            if ( ! this.invincible ) {
-                AlterTransparency( 0.4f );
-            }
-            
+            AlterTransparency( 0.4f );
             invincibleCounter -= Time.deltaTime;
         }
     }
